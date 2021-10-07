@@ -39,9 +39,10 @@ class BridgeGenerator(@Autowired val rabbitCreationService: RabbitCreationServic
 
     fun generateFromRabbit(index: Int, bridge: Bridge) : SimpleRabbitListenerEndpoint {
         val exchangeName = bridge.from.rabbit!!.exchange
+        val exchangeType = bridge.from.rabbit.exchangeType
         val queueName = bridge.from.rabbit.queueName
 
-        val (exchange, deadletterExchange) = rabbitCreationService.createExchange(exchangeName)
+        val (exchange, deadletterExchange) = rabbitCreationService.createExchange(exchangeName, exchangeType)
         val (queue, deadletterQueue) = rabbitCreationService.createQueue(queueName, exchangeName)
         rabbitCreationService.bind(queue, exchange, bridge.from.rabbit.routingKey)
         rabbitCreationService.bind(deadletterQueue, deadletterExchange, queueName)
