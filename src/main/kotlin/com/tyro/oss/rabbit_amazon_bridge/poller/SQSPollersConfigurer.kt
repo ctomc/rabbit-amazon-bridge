@@ -53,7 +53,7 @@ class SQSPollersConfigurer(
         bridgesFromSQS.filter(Bridge::isForwardingMessagesEnabled).forEach {
             val queueName = it.from.sqs!!.name
             val queueUrl = amazonSQS.getQueueUrl(queueName).queueUrl!!
-            rabbitCreationService.createExchange(it.to.rabbit!!.exchange)
+            rabbitCreationService.createExchange(it.to.rabbit!!.exchange, it.to.rabbit.exchangeType)
             val sqsReceiver = SQSReceiver(it, amazonSQS, queueUrl)
             val rabbitSender = RabbitSender(it, asyncRabbitTemplate())
             val sqsDispatcher = SQSDispatcher(amazonSQS, sqsReceiver, rabbitSender, queueUrl, queueName, messageIdKey)

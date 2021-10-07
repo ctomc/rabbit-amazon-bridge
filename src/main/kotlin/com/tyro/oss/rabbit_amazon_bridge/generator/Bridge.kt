@@ -37,11 +37,13 @@ data class ToDefinition(val sns: SnsDefinition?, val sqs: SqsDefinition?, val ra
 
 data class RabbitFromDefinition(
         val exchange: String,
+        val exchangeType: String = "topic",
         val queueName: String,
         val routingKey: String)
 
 data class RabbitToDefinition(
         val exchange: String,
+        val exchangeType: String = "topic",
         val routingKey: String)
 
 data class SnsDefinition(val name: String)

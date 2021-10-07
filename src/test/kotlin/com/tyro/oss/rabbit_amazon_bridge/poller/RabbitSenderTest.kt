@@ -41,7 +41,7 @@ class RabbitSenderTest {
         val bridge = Bridge(
                 FromDefinition(null, SqsDefinition(queueName)),
                 transformationSpecs = null,
-                to = ToDefinition(null, null, RabbitToDefinition(RandomString.randomString(), RandomString.randomString())),
+                to = ToDefinition(null, null, RabbitToDefinition(exchange = RandomString.randomString(), routingKey = RandomString.randomString())),
                 shouldForwardMessages = true
         )
 

@@ -41,7 +41,7 @@ class SQSReceiverTest {
         val bridge = Bridge(
                 FromDefinition(null, SqsDefinition(queueName)),
                 transformationSpecs = null,
-                to = ToDefinition(null, null, RabbitToDefinition(randomString(), randomString())),
+                to = ToDefinition(null, null, RabbitToDefinition(exchange = randomString(), routingKey = randomString())),
                 shouldForwardMessages = true
         )
 
@@ -79,7 +79,7 @@ class SQSReceiverTest {
         val bridge = Bridge(
                 FromDefinition(null, SqsDefinition(queueName)),
                 transformationSpecs = null,
-                to = ToDefinition(null, null, RabbitToDefinition(randomString(), randomString())),
+                to = ToDefinition(null, null, RabbitToDefinition(exchange = randomString(), routingKey = randomString())),
                 shouldForwardMessages = true
         )
 
