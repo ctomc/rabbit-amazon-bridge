@@ -17,6 +17,7 @@
 package com.tyro.oss.rabbit_amazon_bridge.poller
 
 import com.amazonaws.services.sqs.AmazonSQSAsync
+import com.fasterxml.jackson.core.JsonProcessingException
 import org.slf4j.LoggerFactory
 
 class SQSDispatcher(private val amazonSQS: AmazonSQSAsync, val sqsReceiver: SQSReceiver, val rabbitSender: RabbitSender, val queueUrl: String, val queueName: String, val messageIdKey: String?) : Runnable {
@@ -30,6 +31,9 @@ class SQSDispatcher(private val amazonSQS: AmazonSQSAsync, val sqsReceiver: SQSR
 
             try {
                 rabbitSender.send(messageConverter.convert(it, queueName, messageIdKey))
+                amazonSQS.deleteMessageAsync(queueUrl, receiptHandle)
+            } catch (e: JsonProcessingException) {
+                LOG.warn("Received non JSON message - discarding message.", e)
                 amazonSQS.deleteMessageAsync(queueUrl, receiptHandle)
             } catch (e: Exception) {
                 amazonSQS.changeMessageVisibilityAsync(queueUrl, receiptHandle, 0)
