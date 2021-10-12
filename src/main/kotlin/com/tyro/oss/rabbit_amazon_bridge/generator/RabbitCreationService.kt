@@ -22,14 +22,14 @@ import org.springframework.stereotype.Component
 
 @Component
 class RabbitCreationService(@Autowired val amqpAdmin: AmqpAdmin) {
-    fun createExchange(exchange: String): Pair<Exchange, Exchange> {
-        val topicExchange = TopicExchange(exchange, true, false)
+    fun createExchange(exchange: String, exchangeType: String): Pair<Exchange, Exchange> {
+        val customExchange = CustomExchange(exchange, exchangeType, true, false)
         val deadletterTopicExchange = TopicExchange("$exchange-dead-letter", true, false)
 
-        amqpAdmin.declareExchange(topicExchange)
+        amqpAdmin.declareExchange(customExchange)
         amqpAdmin.declareExchange(deadletterTopicExchange)
 
-        return Pair(topicExchange, deadletterTopicExchange)
+        return Pair(customExchange, deadletterTopicExchange)
     }
 
     fun createQueue(queueName: String, exchange: String): Pair<Queue, Queue>  {

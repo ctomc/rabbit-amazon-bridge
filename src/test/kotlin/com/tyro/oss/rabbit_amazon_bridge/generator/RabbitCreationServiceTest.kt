@@ -38,10 +38,10 @@ class RabbitCreationServiceTest {
 
     @Test
     fun `should create exchange and deadletter exchange`() {
-        val expectedExchange = TopicExchange("exchangeName", true, false)
+        val expectedExchange = CustomExchange("exchangeName", "topic", true, false)
         val expectedDeadletterExchange = TopicExchange("exchangeName-dead-letter", true, false)
 
-        val (exchange, deadletterExchange) = rabbitCreationService.createExchange("exchangeName")
+        val (exchange, deadletterExchange) = rabbitCreationService.createExchange("exchangeName", "topic")
 
         assertThat(exchange).isEqualToComparingFieldByFieldRecursively(expectedExchange)
         assertThat(deadletterExchange).isEqualToComparingFieldByFieldRecursively(expectedDeadletterExchange)

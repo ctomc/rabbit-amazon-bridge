@@ -86,12 +86,12 @@ class BridgeGeneratorTest {
 
         val fromRabbit = bridge.from.rabbit!!
 
-        whenever(deadLetteringrabbitCreationService.createExchange(fromRabbit.exchange)).thenReturn(Pair(exchange, deadletterExchange))
+        whenever(deadLetteringrabbitCreationService.createExchange(fromRabbit.exchange, fromRabbit.exchangeType)).thenReturn(Pair(exchange, deadletterExchange))
         whenever(deadLetteringrabbitCreationService.createQueue(fromRabbit.queueName, fromRabbit.exchange)).thenReturn(Pair(queue, deadletterQueue))
 
         val endPoint = bridgeGenerator.generateFromRabbit(index, bridge)
 
-        verify(deadLetteringrabbitCreationService).createExchange(fromRabbit.exchange)
+        verify(deadLetteringrabbitCreationService).createExchange(fromRabbit.exchange, fromRabbit.exchangeType)
         verify(deadLetteringrabbitCreationService).createQueue(fromRabbit.queueName, fromRabbit.exchange)
         verify(deadLetteringrabbitCreationService).bind(queue, exchange, fromRabbit.routingKey)
         verify(deadLetteringrabbitCreationService).bind(deadletterQueue, deadletterExchange, fromRabbit.queueName)
@@ -117,12 +117,12 @@ class BridgeGeneratorTest {
         val index = 0
 
         val fromRabbit = bridge.from.rabbit!!
-        whenever(deadLetteringrabbitCreationService.createExchange(fromRabbit.exchange)).thenReturn(Pair(exchange, deadletterExchange))
+        whenever(deadLetteringrabbitCreationService.createExchange(fromRabbit.exchange, fromRabbit.exchangeType)).thenReturn(Pair(exchange, deadletterExchange))
         whenever(deadLetteringrabbitCreationService.createQueue(fromRabbit.queueName, fromRabbit.exchange)).thenReturn(Pair(queue, deadletterQueue))
 
         val endPoint = bridgeGenerator.generateFromRabbit(index, bridge)
 
-        verify(deadLetteringrabbitCreationService).createExchange(fromRabbit.exchange)
+        verify(deadLetteringrabbitCreationService).createExchange(fromRabbit.exchange, fromRabbit.exchangeType)
         verify(deadLetteringrabbitCreationService).createQueue(fromRabbit.queueName, fromRabbit.exchange)
         verify(deadLetteringrabbitCreationService).bind(queue, exchange, fromRabbit.routingKey)
         verify(deadLetteringrabbitCreationService).bind(deadletterQueue, deadletterExchange, fromRabbit.queueName)
@@ -147,7 +147,7 @@ class BridgeGeneratorTest {
         val index = 0
 
         val fromRabbit = bridge.from.rabbit!!
-        whenever(deadLetteringrabbitCreationService.createExchange(fromRabbit.exchange)).thenReturn(Pair(exchange, deadletterExchange))
+        whenever(deadLetteringrabbitCreationService.createExchange(fromRabbit.exchange, fromRabbit.exchangeType)).thenReturn(Pair(exchange, deadletterExchange))
         whenever(deadLetteringrabbitCreationService.createQueue(fromRabbit.queueName, fromRabbit.exchange)).thenReturn(Pair(queue, deadletterQueue))
 
         val endPoint = bridgeGenerator.generateFromRabbit(index, bridge)
@@ -167,7 +167,7 @@ class BridgeGeneratorTest {
         val index = 0
 
         val fromRabbit = bridge.from.rabbit!!
-        whenever(deadLetteringrabbitCreationService.createExchange(fromRabbit.exchange)).thenReturn(Pair(exchange, deadletterExchange))
+        whenever(deadLetteringrabbitCreationService.createExchange(fromRabbit.exchange, fromRabbit.exchangeType)).thenReturn(Pair(exchange, deadletterExchange))
         whenever(deadLetteringrabbitCreationService.createQueue(fromRabbit.queueName, fromRabbit.exchange)).thenReturn(Pair(queue, deadletterQueue))
 
         val endPoint = bridgeGenerator.generateFromRabbit(index, bridge)
