@@ -41,9 +41,17 @@ class BridgeGenerator(@Autowired val rabbitCreationService: RabbitCreationServic
         val exchangeName = bridge.from.rabbit!!.exchange
         val exchangeType = bridge.from.rabbit.exchangeType
         val queueName = bridge.from.rabbit.queueName
+        val deadletter = bridge.from.rabbit.deadLetter
+        val deadletterPrefixed = "dead.$deadletter"
 
-        val (exchange, deadletterExchange) = rabbitCreationService.createExchange(exchangeName, exchangeType)
-        val (queue, deadletterQueue) = rabbitCreationService.createQueue(queueName, exchangeName)
+        val (exchange, deadletterExchange) = rabbitCreationService.createExchange(
+            exchangeName,
+            exchangeType,
+            deadletterPrefixed)
+        val (queue, deadletterQueue) = rabbitCreationService.createQueue(
+            queueName,
+            exchangeName,
+            deadletterPrefixed)
         rabbitCreationService.bind(queue, exchange, bridge.from.rabbit.routingKey)
         rabbitCreationService.bind(deadletterQueue, deadletterExchange, queueName)
 

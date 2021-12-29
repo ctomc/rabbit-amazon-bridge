@@ -55,7 +55,9 @@ class SQSPollersConfigurer(
             val queueUrl = amazonSQS.getQueueUrl(queueName).queueUrl!!
             val exchange = it.to.rabbit!!.exchange
             val routingKey = it.to.rabbit.routingKey
-            rabbitCreationService.createExchange(exchange, it.to.rabbit.exchangeType)
+            val deadletter = it.to.rabbit.deadLetter
+            val deadletterQueueAndExchangeName = "dead.$deadletter"
+            rabbitCreationService.createExchange(exchange, it.to.rabbit.exchangeType, deadletterQueueAndExchangeName)
             val sqsReceiver = SQSReceiver(it, amazonSQS, queueUrl)
             val rabbitSender = RabbitSender(it, asyncRabbitTemplate())
             val sqsDispatcher = SQSDispatcher(amazonSQS, sqsReceiver, rabbitSender, queueUrl, queueName, messageIdKey)
