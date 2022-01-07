@@ -22,9 +22,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class RabbitCreationService(@Autowired val amqpAdmin: AmqpAdmin) {
-    fun createExchange(exchange: String, exchangeType: String): Pair<Exchange, Exchange> {
+    fun createExchange(exchange: String, exchangeType: String, deadletterExchangeName: String): Pair<Exchange, Exchange> {
         val customExchange = CustomExchange(exchange, exchangeType, true, false)
-        val deadletterTopicExchange = TopicExchange("$exchange-dead-letter", true, false)
+        val deadletterTopicExchange = TopicExchange(deadletterExchangeName, true, false)
 
         amqpAdmin.declareExchange(customExchange)
         amqpAdmin.declareExchange(deadletterTopicExchange)
@@ -32,14 +32,14 @@ class RabbitCreationService(@Autowired val amqpAdmin: AmqpAdmin) {
         return Pair(customExchange, deadletterTopicExchange)
     }
 
-    fun createQueue(queueName: String, exchange: String): Pair<Queue, Queue>  {
+    fun createQueue(queueName: String, exchange: String, deadletterQueueAndExchangeName: String): Pair<Queue, Queue>  {
         val args = mapOf(
-                "x-dead-letter-exchange" to "$exchange-dead-letter",
-                "x-dead-letter-routing-key" to queueName
+                "x-dead-letter-exchange" to deadletterQueueAndExchangeName,
+                "x-dead-letter-routing-key" to "dead.$queueName"
         )
 
         val queue = Queue(queueName, true, false, false, args)
-        val deadletterQueue = Queue("$queueName-dead-letter", true, false, false, null)
+        val deadletterQueue = Queue(deadletterQueueAndExchangeName, true, false, false, null)
 
         amqpAdmin.declareQueue(queue)
         amqpAdmin.declareQueue(deadletterQueue)

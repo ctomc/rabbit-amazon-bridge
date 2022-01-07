@@ -41,7 +41,11 @@ class RabbitCreationServiceTest {
         val expectedExchange = CustomExchange("exchangeName", "topic", true, false)
         val expectedDeadletterExchange = TopicExchange("exchangeName-dead-letter", true, false)
 
-        val (exchange, deadletterExchange) = rabbitCreationService.createExchange("exchangeName", "topic")
+        val (exchange, deadletterExchange) = rabbitCreationService.createExchange(
+            "exchangeName",
+            "topic",
+            "exchangeName-dead-letter"
+        )
 
         assertThat(exchange).isEqualToComparingFieldByFieldRecursively(expectedExchange)
         assertThat(deadletterExchange).isEqualToComparingFieldByFieldRecursively(expectedDeadletterExchange)
@@ -54,15 +58,16 @@ class RabbitCreationServiceTest {
     fun `should create queue and deadletter queue `() {
         val queueName = "queueName"
         val exchangeName = "exchangeName"
+        val deadletter = "dead.dead-letter"
 
         val args = HashMap<String, Any>()
-        args["x-dead-letter-exchange"] = "$exchangeName-dead-letter"
-        args["x-dead-letter-routing-key"] = queueName
+        args["x-dead-letter-exchange"] = deadletter
+        args["x-dead-letter-routing-key"] = "dead.$queueName"
 
         val expectedQueue = Queue(queueName, true, false, false, args)
-        val expectedDeadletterQueue = Queue("$queueName-dead-letter", true, false, false, null)
+        val expectedDeadletterQueue = Queue(deadletter, true, false, false, null)
 
-        val (queue, deadletterQueue) = rabbitCreationService.createQueue(queueName, exchangeName)
+        val (queue, deadletterQueue) = rabbitCreationService.createQueue(queueName, exchangeName, deadletter)
 
         assertThat(queue).isEqualToComparingFieldByFieldRecursively(expectedQueue)
         assertThat(deadletterQueue).isEqualToComparingFieldByFieldRecursively(expectedDeadletterQueue)

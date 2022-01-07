@@ -18,8 +18,9 @@ package com.tyro.oss.rabbit_amazon_bridge
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration
 
-@SpringBootApplication
+@SpringBootApplication(exclude = [ContextInstanceDataAutoConfiguration::class])
 class RabbitAmazonBridgeApplication
 
 fun main(args: Array<String>) {

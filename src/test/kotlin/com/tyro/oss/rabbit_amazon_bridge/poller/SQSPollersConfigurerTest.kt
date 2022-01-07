@@ -77,7 +77,13 @@ class SQSPollersConfigurerTest{
 
         bridgesFromSQS.forEach { bridge ->
             val dispatcher = dispatchers.find { it.sqsReceiver.getQueueName() == bridge.from.sqs!!.name}!!
-            verify(rabbitCreationService).createExchange(bridge.to.rabbit!!.exchange, bridge.to.rabbit!!.exchangeType)
+            val deadletter = bridge.to.rabbit!!.deadLetter
+            val deadletterExchangeName = "dead.$deadletter"
+            verify(rabbitCreationService).createExchange(
+                bridge.to.rabbit!!.exchange,
+                bridge.to.rabbit!!.exchangeType,
+                deadletterExchangeName
+            )
             assertThat(dispatcher.rabbitSender.exchangeName).isEqualTo(bridge.to.rabbit!!.exchange)
             assertThat(dispatcher.rabbitSender.routingKey).isEqualTo(bridge.to.rabbit!!.routingKey)
             assertThat(dispatcher.queueUrl).isEqualTo("https://thing.com/${bridge.from.sqs!!.name}")

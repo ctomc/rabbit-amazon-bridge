@@ -39,12 +39,14 @@ data class RabbitFromDefinition(
         val exchange: String,
         val exchangeType: String = "topic",
         val queueName: String,
-        val routingKey: String)
+        val routingKey: String,
+        val deadLetter: String = "dead-letter")
 
 data class RabbitToDefinition(
         val exchange: String,
         val exchangeType: String = "topic",
-        val routingKey: String)
+        val routingKey: String,
+        val deadLetter: String = "dead-letter")
 
 data class SnsDefinition(val name: String)
 
