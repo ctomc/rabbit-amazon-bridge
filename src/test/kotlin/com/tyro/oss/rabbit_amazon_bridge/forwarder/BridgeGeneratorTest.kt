@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package com.tyro.oss.rabbit_amazon_bridge.generator
+package com.tyro.oss.rabbit_amazon_bridge.forwarder
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import com.tyro.oss.rabbit_amazon_bridge.forwarder.DeadletteringMessageListener
-import com.tyro.oss.rabbit_amazon_bridge.forwarder.SnsForwardingMessageListener
-import com.tyro.oss.rabbit_amazon_bridge.forwarder.SqsForwardingMessageListener
+import com.tyro.oss.rabbit_amazon_bridge.generator.BridgeGenerator
+import com.tyro.oss.rabbit_amazon_bridge.generator.RabbitCreationService
+import com.tyro.oss.rabbit_amazon_bridge.generator.fromRabbitToSNSInstance
+import com.tyro.oss.rabbit_amazon_bridge.generator.fromRabbitToSQSInstance
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.DoNothingMessageTransformer
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.JoltMessageTransformer
 import com.tyro.oss.randomdata.RandomBoolean.randomBoolean

@@ -51,7 +51,7 @@ class SqsForwardingMessageListenerTest {
 
         Mockito.`when`(messageTransformer.transform(rabbitMessage)).thenReturn(transformedRabbitMessage)
 
-        val sqsForwardingMessageListener = SqsForwardingMessageListener(queueName, queueMessagingTemplate, messageTransformer)
+        val sqsForwardingMessageListener = SqsForwardingMessageListener(messageTransformer, queueName, queueMessagingTemplate)
         sqsForwardingMessageListener.onMessage(message)
 
         val captor = argumentCaptor<org.springframework.messaging.Message<String>>()
@@ -63,7 +63,7 @@ class SqsForwardingMessageListenerTest {
     @Test
     fun `should escalate exception when MessagingException thrown`() {
 
-        val sqsForwardingMessageListener = SqsForwardingMessageListener(randomString(), queueMessagingTemplate, messageTransformer)
+        val sqsForwardingMessageListener = SqsForwardingMessageListener(messageTransformer, randomString(), queueMessagingTemplate)
         Mockito.doThrow(MessagingException("AWS failed!!!"))
                 .`when`(queueMessagingTemplate)
                 .send(anyString(), Mockito.any(org.springframework.messaging.Message::class.java))

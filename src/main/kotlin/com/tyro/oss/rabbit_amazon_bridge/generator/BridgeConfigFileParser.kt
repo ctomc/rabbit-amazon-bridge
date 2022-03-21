@@ -38,7 +38,8 @@ class BridgeConfigFileParser(@Autowired val objectMapper: ObjectMapper, @Autowir
         check(bridges.all { it.to != null }) { "'To' definition is required" }
         check(bridges.all { it.from != null }) { "A 'from' definition is required" }
 
-        bridges.fromRabbit().apply {
+        Bridge.fromRabbit(bridges)
+            .apply {
             check(all { hasAValidJoltSpecIfPresent(it) }) { "Invalid transformationSpec" }
 
             check(all {
@@ -46,7 +47,7 @@ class BridgeConfigFileParser(@Autowired val objectMapper: ObjectMapper, @Autowir
             }) { "An SNS or SQS definition is required if messages are coming from rabbit" }
         }
 
-        bridges.fromSqs().apply {
+        Bridge.fromSqs(bridges).apply {
             check(none {
                 it.to.sqs != null || it.to.sns != null
             }) { "Forwarding SQS to SQS/SNS is not supported" }

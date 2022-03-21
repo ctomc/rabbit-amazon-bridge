@@ -19,7 +19,7 @@ package com.tyro.oss.rabbit_amazon_bridge.poller
 import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest
 import com.amazonaws.services.sqs.model.ReceiveMessageResult
-import com.tyro.oss.rabbit_amazon_bridge.generator.*
+import com.tyro.oss.rabbit_amazon_bridge.generator.Bridge
 import com.tyro.oss.randomdata.RandomString.randomString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -39,29 +39,34 @@ class SQSReceiverTest {
         val queueUrl = randomString()
         val queueName = randomString()
         val bridge = Bridge(
-                FromDefinition(null, SqsDefinition(queueName)),
-                transformationSpecs = null,
-                to = ToDefinition(null, null, RabbitToDefinition(exchange = randomString(), routingKey = randomString())),
-                shouldForwardMessages = true
+            Bridge.FromDefinition(null, Bridge.SqsDefinition(queueName)),
+            null,
+            Bridge.ToDefinition(
+                null,
+                null,
+                Bridge.RabbitToDefinition(randomString(), randomString())
+            ),
+            true,
+            null
         )
 
         val expectedMessages = listOf(
-                com.amazonaws.services.sqs.model.Message(),
-                com.amazonaws.services.sqs.model.Message(),
-                com.amazonaws.services.sqs.model.Message(),
-                com.amazonaws.services.sqs.model.Message(),
-                com.amazonaws.services.sqs.model.Message()
+            com.amazonaws.services.sqs.model.Message(),
+            com.amazonaws.services.sqs.model.Message(),
+            com.amazonaws.services.sqs.model.Message(),
+            com.amazonaws.services.sqs.model.Message(),
+            com.amazonaws.services.sqs.model.Message()
         )
 
         val receiveMessageRequest = ReceiveMessageRequest()
-                .withWaitTimeSeconds(20)
-                .withMaxNumberOfMessages(10)
-                .withQueueUrl(queueUrl)
-                .withAttributeNames("All")
-                .withMessageAttributeNames("All")
+            .withWaitTimeSeconds(20)
+            .withMaxNumberOfMessages(10)
+            .withQueueUrl(queueUrl)
+            .withAttributeNames("All")
+            .withMessageAttributeNames("All")
 
         `when`(sqsAsync.receiveMessage(receiveMessageRequest)).thenReturn(
-                ReceiveMessageResult().withMessages(expectedMessages)
+            ReceiveMessageResult().withMessages(expectedMessages)
         )
 
         val sqsReceiver = SQSReceiver(bridge, sqsAsync, queueUrl)
@@ -77,18 +82,22 @@ class SQSReceiverTest {
         val queueUrl = randomString()
         val queueName = randomString()
         val bridge = Bridge(
-                FromDefinition(null, SqsDefinition(queueName)),
-                transformationSpecs = null,
-                to = ToDefinition(null, null, RabbitToDefinition(exchange = randomString(), routingKey = randomString())),
-                shouldForwardMessages = true
+            Bridge.FromDefinition(null, Bridge.SqsDefinition(queueName)),
+            null,
+            Bridge.ToDefinition(
+                null, null,
+                Bridge.RabbitToDefinition(randomString(), randomString())
+            ),
+            true,
+            null
         )
 
         val receiveMessageRequest = ReceiveMessageRequest()
-                .withWaitTimeSeconds(20)
-                .withMaxNumberOfMessages(10)
-                .withQueueUrl(queueUrl)
-                .withAttributeNames("All")
-                .withMessageAttributeNames("All")
+            .withWaitTimeSeconds(20)
+            .withMaxNumberOfMessages(10)
+            .withQueueUrl(queueUrl)
+            .withAttributeNames("All")
+            .withMessageAttributeNames("All")
 
         `when`(sqsAsync.receiveMessage(receiveMessageRequest)).thenReturn(null)
 

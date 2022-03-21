@@ -18,7 +18,7 @@ package com.tyro.oss.rabbit_amazon_bridge.poller
 
 import com.nhaarman.mockito_kotlin.verify
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.RabbitMessageBuilder
-import com.tyro.oss.rabbit_amazon_bridge.generator.*
+import com.tyro.oss.rabbit_amazon_bridge.generator.Bridge
 import com.tyro.oss.randomdata.RandomString
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,10 +39,20 @@ class RabbitSenderTest {
     fun `should forward sqs message to rabbit`() {
         val queueName = RandomString.randomString()
         val bridge = Bridge(
-                FromDefinition(null, SqsDefinition(queueName)),
-                transformationSpecs = null,
-                to = ToDefinition(null, null, RabbitToDefinition(exchange = RandomString.randomString(), routingKey = RandomString.randomString())),
-                shouldForwardMessages = true
+            Bridge.FromDefinition(
+                null,
+                Bridge.SqsDefinition(queueName)
+            ),
+            null,
+            Bridge.ToDefinition(
+                null,
+                null,
+                Bridge.RabbitToDefinition(
+                    RandomString.randomString(),
+                    RandomString.randomString()
+                )
+            ),
+            true, null
         )
 
         rabbitSender = RabbitSender(bridge, asyncRabbitTemplate)
@@ -54,7 +64,11 @@ class RabbitSenderTest {
         rabbitSender.send(payload)
 
 
-        verify(asyncRabbitTemplate).sendAndReceive(bridge.to.rabbit?.exchange, bridge.to.rabbit?.routingKey, rabbitMessage)
+        verify(asyncRabbitTemplate).sendAndReceive(
+            bridge.to.rabbit?.exchange,
+            bridge.to.rabbit?.routingKey,
+            rabbitMessage
+        )
 
     }
 }
