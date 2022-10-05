@@ -18,7 +18,7 @@ package com.tyro.oss.rabbit_amazon_bridge.poller
 
 import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.model.GetQueueUrlResult
-import com.nhaarman.mockito_kotlin.*
+import org.mockito.kotlin.*
 import com.tyro.oss.rabbit_amazon_bridge.generator.RabbitCreationService
 import com.tyro.oss.rabbit_amazon_bridge.generator.fromSQSToRabbitInstance
 import com.tyro.oss.randomdata.RandomString.randomString
@@ -49,9 +49,9 @@ class SQSPollersConfigurerTest{
     @Test
     fun `Should register the bridges`() {
         val bridgesFromSQS =  listOf(
-                fromSQSToRabbitInstance().copy(shouldForwardMessages = true),
-                fromSQSToRabbitInstance().copy(shouldForwardMessages = true),
-                fromSQSToRabbitInstance().copy(shouldForwardMessages = true)
+                fromSQSToRabbitInstance(shouldForwardMessages = true),
+                fromSQSToRabbitInstance(shouldForwardMessages = true),
+                fromSQSToRabbitInstance(shouldForwardMessages = true)
         )
         val messageIdKey = randomString()
 
@@ -76,7 +76,7 @@ class SQSPollersConfigurerTest{
         assertThat(dispatchers.distinct().size).isEqualTo(bridgesFromSQS.size)
 
         bridgesFromSQS.forEach { bridge ->
-            val dispatcher = dispatchers.find { it.sqsReceiver.getQueueName() == bridge.from.sqs!!.name}!!
+            val dispatcher = dispatchers.find { it.sqsReceiver.sqsQueueName == bridge.from.sqs!!.name}!!
             val deadletter = bridge.to.rabbit!!.deadLetter
             val deadletterExchangeName = "dead.$deadletter"
             verify(rabbitCreationService).createExchange(
@@ -96,15 +96,15 @@ class SQSPollersConfigurerTest{
     @Test
     fun `should not register bridges that are set to not forward messages`() {
         val bridgesFromSQS =  listOf(
-                fromSQSToRabbitInstance().copy(shouldForwardMessages = false)
+                fromSQSToRabbitInstance(shouldForwardMessages = false)
         )
         val messageIdKey = randomString()
 
         val config = SQSPollersConfigurer(amazonSQS, bridgesFromSQS, rabbitTemplate, rabbitCreationService, messageIdKey)
         config.configureTasks(taskRegistrar)
 
-        verifyZeroInteractions(taskRegistrar)
-        verifyZeroInteractions(amazonSQS)
-        verifyZeroInteractions(rabbitCreationService)
+        verifyNoInteractions(taskRegistrar)
+        verifyNoInteractions(amazonSQS)
+        verifyNoInteractions(rabbitCreationService)
     }
 }

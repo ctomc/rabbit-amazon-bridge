@@ -21,25 +21,32 @@ import com.tyro.oss.arbitrater.arbitraryInstance
 import com.tyro.oss.randomdata.RandomBoolean.randomBoolean
 import com.tyro.oss.randomdata.RandomString.randomString
 
-/*fun fromRabbitToSQSInstance() = arbitraryBridge()
-    .copy(from = rabbitFromDefinition())
-    .copy(transformationSpecs = transformationSpecs())
-    .copy(to = sqsToDefinition())
+fun fromRabbitToSQSInstance(shouldForwardMessages: Boolean? = false, transformationSpecs: List<Object>? = emptyList()
+    ) = Bridge(rabbitFromDefinition(), transformationSpecs, sqsToDefinition(), shouldForwardMessages,randomString() )
+//fun fromRabbitToSQSInstance() = arbitraryBridge();
+//    .copy(from = rabbitFromDefinition())
+//    .copy(transformationSpecs = transformationSpecs())
+//    .copy(to = sqsToDefinition())
 
-fun fromRabbitToSNSInstance() = arbitraryBridge()
-    .copy(from = rabbitFromDefinition())
+fun fromRabbitToSNSInstance(shouldForwardMessages: Boolean? = false, transformationSpecs: List<Object>? = emptyList()
+) = Bridge(rabbitFromDefinition(), transformationSpecs, snsToDefinition(), shouldForwardMessages,randomString()
+)
+//fun fromRabbitToSNSInstance() = arbitraryBridge();
+    /*.copy(from = rabbitFromDefinition())
     .copy(transformationSpecs = transformationSpecs())
-    .copy(to = snsToDefinition())
+    .copy(to = snsToDefinition())*/
 
-fun fromSQSToRabbitInstance() = arbitraryBridge()
-    .copy(from = sqsFromDefinition())
-    .copy(to = rabbitToDefinition())*/
+fun fromSQSToRabbitInstance(shouldForwardMessages: Boolean) = Bridge(sqsFromDefinition(), transformationSpecs(),
+    rabbitToDefinition(),shouldForwardMessages, randomString()
+)
+
+
 
 private fun arbitraryBridge() =
     Bridge(sqsFromDefinition(), transformationSpecs(), snsToDefinition(), randomBoolean(), randomString())
 
-private fun sqsToDefinition() = Bridge.ToDefinition(null, Bridge.SqsDefinition::class.arbitraryInstance(), null)
-private fun snsToDefinition() = Bridge.ToDefinition(Bridge.SnsDefinition::class.arbitraryInstance(), null, null)
+private fun sqsToDefinition() = Bridge.ToDefinition(null, Bridge.SqsDefinition(randomString()), null)
+private fun snsToDefinition() = Bridge.ToDefinition(Bridge.SnsDefinition(randomString()), null, null)
 private fun rabbitToDefinition() = Bridge.ToDefinition(
     null,
     null,
@@ -58,7 +65,7 @@ fun rabbitFromDefinition() = Bridge.FromDefinition(
 
 private fun sqsFromDefinition() = Bridge.FromDefinition(
     null,
-    Bridge.SqsDefinition::class.arbitraryInstance()
+    Bridge.SqsDefinition(randomString())
 )
 
 private fun transformationSpecs() = emptyList<JoltTransform>()

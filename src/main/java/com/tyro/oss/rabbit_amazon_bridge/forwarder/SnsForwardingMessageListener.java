@@ -2,10 +2,11 @@ package com.tyro.oss.rabbit_amazon_bridge.forwarder;
 
 import com.bazaarvoice.jolt.JsonUtils;
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.MessageTransformer;
+import io.awspring.cloud.messaging.core.NotificationMessagingTemplate;
 import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.amqp.core.Message;
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate;
+
 
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;

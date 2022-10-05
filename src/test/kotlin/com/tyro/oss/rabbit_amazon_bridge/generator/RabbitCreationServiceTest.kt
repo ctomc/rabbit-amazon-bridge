@@ -16,9 +16,9 @@
 
 package com.tyro.oss.rabbit_amazon_bridge.generator
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.refEq
-import com.nhaarman.mockito_kotlin.verify
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.refEq
+import org.mockito.kotlin.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -62,7 +62,7 @@ class RabbitCreationServiceTest {
 
         val args = HashMap<String, Any>()
         args["x-dead-letter-exchange"] = deadletter
-        args["x-dead-letter-routing-key"] = "dead.$queueName"
+        args["x-dead-letter-routing-key"] = "dead."+queueName
 
         val expectedQueue = Queue(queueName, true, false, false, args)
         val expectedDeadletterQueue = Queue(deadletter, true, false, false, null)

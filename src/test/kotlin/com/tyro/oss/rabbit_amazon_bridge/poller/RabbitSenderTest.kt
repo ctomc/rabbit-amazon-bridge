@@ -16,7 +16,8 @@
 
 package com.tyro.oss.rabbit_amazon_bridge.poller
 
-import com.nhaarman.mockito_kotlin.verify
+import com.bazaarvoice.jolt.Transform
+import org.mockito.kotlin.verify
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.RabbitMessageBuilder
 import com.tyro.oss.rabbit_amazon_bridge.generator.Bridge
 import com.tyro.oss.randomdata.RandomString
@@ -43,7 +44,6 @@ class RabbitSenderTest {
                 null,
                 Bridge.SqsDefinition(queueName)
             ),
-            null,
             Bridge.ToDefinition(
                 null,
                 null,

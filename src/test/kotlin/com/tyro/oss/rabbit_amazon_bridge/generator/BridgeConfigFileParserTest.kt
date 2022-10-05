@@ -16,7 +16,7 @@
 
 package com.tyro.oss.rabbit_amazon_bridge.generator
 
-import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.assertj.core.api.Assertions.assertThat
@@ -24,6 +24,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
+import kotlin.test.assertNull
 
 class BridgeConfigFileParserTest {
 
@@ -39,7 +40,8 @@ class BridgeConfigFileParserTest {
                   }]"""
     }
 
-    private val objectMapper = jacksonObjectMapper()
+    private val objectMapper = jacksonObjectMapper();
+
 
     @Test
     fun `should generate an empty list for an empty file`() {
@@ -52,7 +54,7 @@ class BridgeConfigFileParserTest {
     @Test
     fun `should generate bridge with jolt spec`() {
         val payload = configFileResources(
-                """[{
+            """[{
                        "from" : {
                          "rabbit": {
                            "exchange": "exchange-name-2",
@@ -66,14 +68,15 @@ class BridgeConfigFileParserTest {
                            "name":"sqs-queue-name"
                          }
                        }
-                     }]""")
+                     }]"""
+        )
 
         val bridges: List<Bridge> = BridgeConfigFileParser(objectMapper, payload).parse()
 
         assertThat(bridges.size).isEqualTo(1)
         bridges[0].let {
             assertThat(it.transformationSpecs as List<Any>)
-                    .isEqualTo(objectMapper.readValue(TRANSFORMATION_SPECS))
+                .isEqualTo(objectMapper.readValue(TRANSFORMATION_SPECS))
         }
     }
 
@@ -157,7 +160,7 @@ class BridgeConfigFileParserTest {
     @Test
     fun `should default should forward messages to true when not set`() {
         val payload = configFileResources(
-                """[{
+            """[{
                             "from" : {
                               "rabbit": {
                                 "exchange": "exchange-name-2",
@@ -171,16 +174,18 @@ class BridgeConfigFileParserTest {
                                 "name":"sqs-queue-name"
                               }
                             }
-                          }]""")
+                          }]"""
+        )
 
         val bridges: List<Bridge> = BridgeConfigFileParser(objectMapper, payload).parse()
         assertThat(bridges.size).isEqualTo(1)
-        assertThat(bridges[0].shouldForwardMessages).isEqualTo(null)
+        assertNull(bridges[0].shouldForwardMessages)
     }
 
     @Test
     fun `should generate a rabbit definition in the bridge for sns`() {
-        val payload = configFileResources("""[{
+        val payload = configFileResources(
+            """[{
                             "from" : {
                               "rabbit": {
                                 "exchange": "exchange-name-2",
@@ -194,7 +199,8 @@ class BridgeConfigFileParserTest {
                                 "name":"sns-queue-name"
                               }
                             }
-                          }]""")
+                          }]"""
+        )
 
         val bridges = BridgeConfigFileParser(objectMapper, payload).parse()
         assertThat(bridges.size).isEqualTo(1)
@@ -230,7 +236,7 @@ class BridgeConfigFileParserTest {
                            }]"""
 
         val payload = configFileResources(
-                """[{
+            """[{
                             "from" : {
                               "rabbit": {
                                 "exchange": "exchange-name-2",
@@ -244,15 +250,17 @@ class BridgeConfigFileParserTest {
                                 "name":"sqs-queue-name"
                               }
                             }
-                          }]""")
+                          }]"""
+        )
 
         assertThatThrownBy { BridgeConfigFileParser(objectMapper, payload).parse() }
-                .isInstanceOf(IllegalStateException::class.java).hasMessage("Invalid transformationSpec")
+            .isInstanceOf(IllegalStateException::class.java).hasMessage("Invalid transformationSpec")
     }
 
     @Test
     fun `should throw an error when no ToDefinition is provided`() {
-        val payload = configFileResources("""[{
+        val payload = configFileResources(
+            """[{
                       "from" : {
                             "rabbit": {
                               "exchange": "exchange-name-2",
@@ -261,14 +269,18 @@ class BridgeConfigFileParserTest {
                             }
                         },
                         "transformationSpecs": $TRANSFORMATION_SPECS
-                }]""")
+                }]"""
+        )
 
-        assertThatThrownBy { BridgeConfigFileParser(objectMapper, payload).parse() }.isInstanceOf(MissingKotlinParameterException::class.java)
+        assertThatThrownBy { BridgeConfigFileParser(objectMapper, payload).parse() }.hasCauseInstanceOf(
+            MismatchedInputException::class.java
+        )
     }
 
     @Test
     fun `should throw an error when no SNS or SQS definitions is provided and the message is from rabbit`() {
-        val payload = configFileResources("""[{
+        val payload = configFileResources(
+            """[{
                       "from" : {
                         "rabbit": {
                           "exchange": "exchange-name-2",
@@ -278,15 +290,18 @@ class BridgeConfigFileParserTest {
                       },
                       "transformationSpecs": $TRANSFORMATION_SPECS,
                       "to" : {}
-                    }]""")
+                    }]"""
+        )
 
         assertThatThrownBy { BridgeConfigFileParser(objectMapper, payload).parse() }
-                .isInstanceOf(IllegalStateException::class.java).hasMessage("An SNS or SQS definition is required if messages are coming from rabbit")
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessage("An SNS or SQS definition is required if messages are coming from rabbit")
     }
 
     @Test
     fun `should throw an unsupportedOperation when both sns and sqs is provided in the ToDefinition`() {
-        val payload = configFileResources("""[{
+        val payload = configFileResources(
+            """[{
                             "from" : {
                               "rabbit": {
                                 "exchange": "exchange-name-2",
@@ -303,29 +318,34 @@ class BridgeConfigFileParserTest {
                                 "name":"sns-queue-name"
                               }
                             }
-                          }]""")
+                          }]"""
+        )
 
         assertThatThrownBy { BridgeConfigFileParser(objectMapper, payload).parse() }
-                .isInstanceOf(IllegalStateException::class.java).hasMessage("We do not currently support fanout to multiple AWS destinations in one bridge")
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessage("We do not currently support fanout to multiple AWS destinations in one bridge")
     }
 
     @Test
     fun `should throw an error when rabbit from details are not provided`() {
-        val payload = configFileResources("""[{
+        val payload = configFileResources(
+            """[{
                        "transformationSpecs": $TRANSFORMATION_SPECS,
                        "to" : {
                          "sns": {
                            "name":"sns-queue-name"
                          }
                        }
-                     }]""")
+                     }]"""
+        )
         assertThatThrownBy { BridgeConfigFileParser(objectMapper, payload).parse() }
-                .isInstanceOf(MissingKotlinParameterException::class.java)
+            .hasCauseInstanceOf(MismatchedInputException::class.java)
     }
 
     @Test
     fun `should generate bridge from sqs to rabbit`() {
-        val payload = configFileResources("""[{
+        val payload = configFileResources(
+            """[{
                             "from" : {
                               "sqs": {
                                 "name":"sqs-queue-name"
@@ -337,7 +357,8 @@ class BridgeConfigFileParserTest {
                                 "routingKey": "routing-key-2"
                               }
                             }
-                          }]""")
+                          }]"""
+        )
 
 
         val bridges = BridgeConfigFileParser(objectMapper, payload).parse()
@@ -350,7 +371,8 @@ class BridgeConfigFileParserTest {
 
     @Test
     fun `should go to rabbit if it comes from sqs`() {
-        val payload = configFileResources("""[{
+        val payload = configFileResources(
+            """[{
                             "from" : {
                               "sqs": {
                                 "name":"sqs-queue-name"
@@ -362,7 +384,8 @@ class BridgeConfigFileParserTest {
                                 "routingKey": "routing-key-2"
                               }
                             }
-                          }]""")
+                          }]"""
+        )
 
 
         val bridges = BridgeConfigFileParser(objectMapper, payload).parse()
@@ -375,7 +398,8 @@ class BridgeConfigFileParserTest {
 
     @Test
     fun `should throw an error if it is "from sqs" and not "to rabbit"`() {
-        val payloadSQStoSQS = configFileResources("""[{
+        val payloadSQStoSQS = configFileResources(
+            """[{
                             "from" : {
                               "sqs": {
                                 "name":"sqs-queue-name"
@@ -386,9 +410,11 @@ class BridgeConfigFileParserTest {
                                 "name":"sqs-queue-name-2"
                               }
                             }
-                          }]""")
+                          }]"""
+        )
 
-        val payloadSQStoSNS = configFileResources("""[{
+        val payloadSQStoSNS = configFileResources(
+            """[{
                             "from" : {
                               "sqs": {
                                 "name":"sqs-queue-name"
@@ -399,29 +425,33 @@ class BridgeConfigFileParserTest {
                                 "name":"sns-topic-name-2"
                               }
                             }
-                          }]""")
+                          }]"""
+        )
 
         assertThatThrownBy { BridgeConfigFileParser(objectMapper, payloadSQStoSQS).parse() }
-                .isInstanceOf(IllegalStateException::class.java).hasMessage("Forwarding SQS to SQS/SNS is not supported")
+            .isInstanceOf(IllegalStateException::class.java).hasMessage("Forwarding SQS to SQS/SNS is not supported")
         assertThatThrownBy { BridgeConfigFileParser(objectMapper, payloadSQStoSNS).parse() }
-                .isInstanceOf(IllegalStateException::class.java).hasMessage("Forwarding SQS to SQS/SNS is not supported")
+            .isInstanceOf(IllegalStateException::class.java).hasMessage("Forwarding SQS to SQS/SNS is not supported")
     }
 
     @Test
     fun `should have a "to rabbit" definition when the "from" is SQS`() {
-        val payload = configFileResources("""[{
+        val payload = configFileResources(
+            """[{
                       "from" : {
                         "sqs": {
                             "name":"sqs-queue-name"
                           }
                       },
                       "to" : {}
-                    }]""")
+                    }]"""
+        )
 
         assertThatThrownBy { BridgeConfigFileParser(objectMapper, payload).parse() }
-                .isInstanceOf(IllegalStateException::class.java).hasMessage("An rabbit definition is required for messages coming from SQS")
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessage("An rabbit definition is required for messages coming from SQS")
     }
 
     private fun configFileResources(vararg resourceContent: String) =
-            resourceContent.map { ByteArrayResource(it.toByteArray()) }
+        resourceContent.map { ByteArrayResource(it.toByteArray()) }
 }

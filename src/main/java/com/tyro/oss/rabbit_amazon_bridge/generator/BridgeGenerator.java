@@ -1,6 +1,7 @@
 package com.tyro.oss.rabbit_amazon_bridge.generator;
 
 import com.bazaarvoice.jolt.JoltTransform;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.DeadletteringMessageListener;
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.MessageTransformingMessageListener;
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.SnsForwardingMessageListener;
@@ -8,6 +9,8 @@ import com.tyro.oss.rabbit_amazon_bridge.forwarder.SqsForwardingMessageListener;
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.DoNothingMessageTransformer;
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.JoltMessageTransformer;
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.MessageTransformer;
+import io.awspring.cloud.messaging.core.NotificationMessagingTemplate;
+import io.awspring.cloud.messaging.core.QueueMessagingTemplate;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +19,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate;
-import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -42,11 +44,7 @@ public class BridgeGenerator {
         this.shouldRetry = shouldRetry;
     }
 
-    public SimpleRabbitListenerEndpoint generateFromRabbit(int idx, Bridge bridge) {
-        return generateFromRabbit(bridge);
-    }
-    @NotNull
-    public SimpleRabbitListenerEndpoint generateFromRabbit(@NotNull Bridge bridge) {
+    public SimpleRabbitListenerEndpoint generateFromRabbit(int index, @NotNull Bridge bridge) {
         var exchangeName = bridge.from().rabbit().exchange();
         var exchangeType = bridge.from().rabbit().exchangeType();
 
@@ -65,7 +63,7 @@ public class BridgeGenerator {
         rabbitCreationService.bind(deadletterQueue, deadletterExchange, queueName);
         LOG.info("Creating bridge between exchange: " + exchangeName + '/' + queueName + " to " + this.getDestinationName(bridge));
         SimpleRabbitListenerEndpoint endpoint = new SimpleRabbitListenerEndpoint();
-        //endpoint.setId("org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#" + index);
+        endpoint.setId("org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#" + index);
         endpoint.setQueueNames(queueName);
         endpoint.setMessageListener(this.messageListener(bridge));
         return endpoint;
@@ -103,8 +101,12 @@ public class BridgeGenerator {
 
     }
 
-    private MessageTransformer createMessageTransformer(List<JoltTransform> transformationSpecs) {
+    /*private MessageTransformer createMessageTransformer(List<JoltTransform> transformationSpecs) {
         return (transformationSpecs != null ? transformationSpecs.size() : 0) > 0 ? new JoltMessageTransformer(transformationSpecs) : new DoNothingMessageTransformer();
+    }*/
+    private MessageTransformer createMessageTransformer(List transformationSpecs) {
+        //return (transformationSpecs != null ? transformationSpecs.size() : 0) > 0 ? new JoltMessageTransformer(transformationSpecs) : new DoNothingMessageTransformer();
+        return new DoNothingMessageTransformer();
     }
 
 }

@@ -14,6 +14,9 @@ public class JoltMessageTransformer implements MessageTransformer {
     public JoltMessageTransformer(@NotNull List<JoltTransform> spec) {
         this.chainr = new Chainr(spec);
     }
+    public JoltMessageTransformer(@NotNull Chainr chainr) {
+        this.chainr = chainr;
+    }
 
     @Override
     public String transform(@NotNull String message) {

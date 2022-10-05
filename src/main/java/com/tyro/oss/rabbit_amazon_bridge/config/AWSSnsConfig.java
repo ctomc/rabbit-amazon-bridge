@@ -5,10 +5,11 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSAsync;
 import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder;
+import io.awspring.cloud.core.region.RegionProvider;
+import io.awspring.cloud.messaging.core.NotificationMessagingTemplate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.aws.core.region.RegionProvider;
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

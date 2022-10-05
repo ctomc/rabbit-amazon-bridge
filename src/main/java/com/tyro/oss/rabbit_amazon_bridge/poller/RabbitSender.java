@@ -26,5 +26,11 @@ public class RabbitSender {
         asyncRabbitTemplate.sendAndReceive(exchangeName, routingKey, m);
     }
 
+    public String getExchangeName() {
+        return exchangeName;
+    }
 
+    public String getRoutingKey() {
+        return routingKey;
+    }
 }

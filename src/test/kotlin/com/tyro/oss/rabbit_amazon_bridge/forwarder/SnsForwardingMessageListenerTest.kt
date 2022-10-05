@@ -16,9 +16,10 @@
 
 package com.tyro.oss.rabbit_amazon_bridge.forwarder
 
-import com.nhaarman.mockito_kotlin.argumentCaptor
+import org.mockito.kotlin.argumentCaptor
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.MessageTransformer
 import com.tyro.oss.randomdata.RandomString.randomString
+import io.awspring.cloud.messaging.core.NotificationMessagingTemplate
 import io.cloudevents.json.Json
 import io.cloudevents.v1.CloudEventBuilder
 import io.cloudevents.v1.CloudEventImpl
@@ -32,7 +33,6 @@ import org.mockito.Mockito.anyString
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.core.MessageProperties
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate
 import org.springframework.messaging.MessagingException
 import java.net.URI
 import java.time.ZonedDateTime

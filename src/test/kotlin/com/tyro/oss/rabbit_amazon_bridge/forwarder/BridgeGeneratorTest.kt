@@ -16,11 +16,12 @@
 
 package com.tyro.oss.rabbit_amazon_bridge.forwarder
 
+import com.bazaarvoice.jolt.JoltTransform
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import com.tyro.oss.rabbit_amazon_bridge.generator.BridgeGenerator
 import com.tyro.oss.rabbit_amazon_bridge.generator.RabbitCreationService
 import com.tyro.oss.rabbit_amazon_bridge.generator.fromRabbitToSNSInstance
@@ -28,6 +29,8 @@ import com.tyro.oss.rabbit_amazon_bridge.generator.fromRabbitToSQSInstance
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.DoNothingMessageTransformer
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.JoltMessageTransformer
 import com.tyro.oss.randomdata.RandomBoolean.randomBoolean
+import io.awspring.cloud.messaging.core.NotificationMessagingTemplate
+import io.awspring.cloud.messaging.core.QueueMessagingTemplate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -36,8 +39,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.amqp.core.Exchange
 import org.springframework.amqp.core.Queue
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate
-import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
+import java.util.Objects
 
 @RunWith(MockitoJUnitRunner::class)
 class BridgeGeneratorTest {
@@ -77,8 +79,8 @@ class BridgeGeneratorTest {
 
     @Test
     fun `should generate sns bridge`() {
-        val joltSpec = jacksonObjectMapper().readValue<List<Any>>(TRANSFORMATION_SPECS)
-        val bridge = fromRabbitToSNSInstance().copy(transformationSpecs = joltSpec)
+        val joltSpec = jacksonObjectMapper().readValue<List<Object>>(TRANSFORMATION_SPECS)
+        val bridge = fromRabbitToSNSInstance(transformationSpecs = joltSpec)
         val exchange = mock<Exchange>()
         val deadletterExchange = mock<Exchange>()
         val queue = mock<Queue>()
@@ -119,8 +121,8 @@ class BridgeGeneratorTest {
 
     @Test
     fun `should generate sqs bridge`() {
-        val joltSpec =jacksonObjectMapper().readValue<List<Any>>(TRANSFORMATION_SPECS)
-        val bridge = fromRabbitToSQSInstance().copy(transformationSpecs = joltSpec)
+        val joltSpec =jacksonObjectMapper().readValue<List<Object>>(TRANSFORMATION_SPECS)
+        val bridge = fromRabbitToSQSInstance(transformationSpecs = joltSpec)
         val exchange = mock<Exchange>()
         val deadletterExchange = mock<Exchange>()
         val queue = mock<Queue>()
@@ -160,7 +162,7 @@ class BridgeGeneratorTest {
 
     @Test
     fun `should generate sqs bridge with DoNothingMessageTransformer when transformationSpecs is null`() {
-        val bridge = fromRabbitToSQSInstance().copy(transformationSpecs = null)
+        val bridge = fromRabbitToSQSInstance(transformationSpecs = null)
         val exchange = mock<Exchange>()
         val deadletterExchange = mock<Exchange>()
         val queue = mock<Queue>()
@@ -186,7 +188,7 @@ class BridgeGeneratorTest {
 
     @Test
     fun `should generate sqs bridge with DoNothingMessageTransformer when transformationSpecs is empty`() {
-        val bridge = fromRabbitToSQSInstance().copy(transformationSpecs = emptyList())
+        val bridge = fromRabbitToSQSInstance(transformationSpecs = emptyList())
         val exchange = mock<Exchange>()
         val deadletterExchange = mock<Exchange>()
         val queue = mock<Queue>()

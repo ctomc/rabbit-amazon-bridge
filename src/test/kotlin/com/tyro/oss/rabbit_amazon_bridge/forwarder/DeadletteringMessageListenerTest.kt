@@ -19,9 +19,9 @@ package com.tyro.oss.rabbit_amazon_bridge.forwarder
 
 import com.amazonaws.AmazonClientException
 import com.amazonaws.SdkBaseException
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import org.mockito.kotlin.any
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import com.tyro.oss.randomdata.RandomString.randomString
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.Test

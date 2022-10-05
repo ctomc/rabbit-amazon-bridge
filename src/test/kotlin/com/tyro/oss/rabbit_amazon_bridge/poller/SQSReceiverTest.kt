@@ -40,7 +40,6 @@ class SQSReceiverTest {
         val queueName = randomString()
         val bridge = Bridge(
             Bridge.FromDefinition(null, Bridge.SqsDefinition(queueName)),
-            null,
             Bridge.ToDefinition(
                 null,
                 null,
@@ -83,7 +82,6 @@ class SQSReceiverTest {
         val queueName = randomString()
         val bridge = Bridge(
             Bridge.FromDefinition(null, Bridge.SqsDefinition(queueName)),
-            null,
             Bridge.ToDefinition(
                 null, null,
                 Bridge.RabbitToDefinition(randomString(), randomString())

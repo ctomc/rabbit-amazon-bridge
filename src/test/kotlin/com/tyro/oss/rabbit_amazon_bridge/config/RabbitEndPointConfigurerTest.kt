@@ -16,10 +16,10 @@
 
 package com.tyro.oss.rabbit_amazon_bridge.config
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyZeroInteractions
-import com.nhaarman.mockito_kotlin.whenever
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.whenever
 import com.tyro.oss.rabbit_amazon_bridge.generator.BridgeGenerator
 import com.tyro.oss.rabbit_amazon_bridge.generator.fromRabbitToSNSInstance
 import com.tyro.oss.rabbit_amazon_bridge.generator.fromRabbitToSQSInstance
@@ -41,8 +41,8 @@ class RabbitEndPointConfigurerTest {
 
     @Test
     fun `should generate bridges`() {
-        val bridge1 = fromRabbitToSQSInstance().copy(shouldForwardMessages = true)
-        val bridge2 = fromRabbitToSNSInstance().copy(shouldForwardMessages = true)
+        val bridge1 = fromRabbitToSQSInstance(shouldForwardMessages = true)
+        val bridge2 = fromRabbitToSNSInstance(shouldForwardMessages = true)
         val bridges = listOf(bridge1, bridge2)
 
         val listener1: SimpleRabbitListenerEndpoint = mock()
@@ -59,8 +59,8 @@ class RabbitEndPointConfigurerTest {
 
     @Test
     fun `should default to generating bridges when should forward messages is null`() {
-        val bridge1 = fromRabbitToSQSInstance().copy(shouldForwardMessages = null)
-        val bridge2 = fromRabbitToSNSInstance().copy(shouldForwardMessages = null)
+        val bridge1 = fromRabbitToSQSInstance(shouldForwardMessages = null)
+        val bridge2 = fromRabbitToSNSInstance(shouldForwardMessages = null)
         val bridges = listOf(bridge1, bridge2)
 
         val listener1: SimpleRabbitListenerEndpoint = mock()
@@ -77,14 +77,14 @@ class RabbitEndPointConfigurerTest {
 
     @Test
     fun `should generate bridge with forward messages set to false`() {
-        val bridge1 = fromRabbitToSQSInstance().copy(shouldForwardMessages = false)
-        val bridge2 = fromRabbitToSNSInstance().copy(shouldForwardMessages = false)
+        val bridge1 = fromRabbitToSQSInstance(shouldForwardMessages = false)
+        val bridge2 = fromRabbitToSNSInstance(shouldForwardMessages = false)
         val bridges = listOf(bridge1, bridge2)
 
         val configurer = RabbitEndPointConfigurer(bridges, bridgeGenerator)
         configurer.configureRabbitListeners(registrar)
 
-        verifyZeroInteractions(registrar)
-        verifyZeroInteractions(bridgeGenerator)
+        verifyNoInteractions(registrar)
+        verifyNoInteractions(bridgeGenerator)
     }
 }

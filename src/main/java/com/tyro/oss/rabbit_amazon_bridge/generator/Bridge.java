@@ -1,16 +1,32 @@
 package com.tyro.oss.rabbit_amazon_bridge.generator;
 
-import com.bazaarvoice.jolt.JoltTransform;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public record Bridge(FromDefinition from,
-                     List<JoltTransform> transformationSpecs,
-                     ToDefinition to,
+public record Bridge(@NotNull @JsonProperty(required = true) FromDefinition from,
+                     List transformationSpecs,
+                     @NotNull @JsonProperty(required = true) ToDefinition to,
                      Boolean shouldForwardMessages,
                      String description) {
 
+   /* public Bridge(@NotNull FromDefinition from, List<Object> transformationSpecs, @NotNull ToDefinition to, Boolean shouldForwardMessages, String description) {
+        this(from, JsonUtils. Chainr.fromSpec(transformationSpecs), to, shouldForwardMessages, description);
+    }*/
+
+    public Bridge(@NotNull FromDefinition from, @NotNull ToDefinition to, Boolean shouldForwardMessages, String description) {
+        this(from, null, to, shouldForwardMessages, description);
+    }
+
+    public static List<Bridge> fromRabbit(List<Bridge> bridges) {
+        return bridges.stream().filter(bridge -> bridge.from.rabbit != null).toList();
+    }
+
+    public static List<Bridge> fromSqs(List<Bridge> bridges) {
+        return bridges.stream().filter(bridge -> bridge.from.sqs != null).toList();
+    }
 
     @JsonIgnore
     public boolean isForwardingMessagesEnabled() {
@@ -53,15 +69,6 @@ public record Bridge(FromDefinition from,
     }
 
     public record SqsDefinition(String name) {
-    }
-
-
-    public static List<Bridge> fromRabbit(List<Bridge> bridges) {
-        return bridges.stream().filter(bridge -> bridge.from.rabbit != null).toList();
-    }
-
-    public static List<Bridge> fromSqs(List<Bridge> bridges) {
-        return bridges.stream().filter(bridge -> bridge.from.sqs != null).toList();
     }
 }
 

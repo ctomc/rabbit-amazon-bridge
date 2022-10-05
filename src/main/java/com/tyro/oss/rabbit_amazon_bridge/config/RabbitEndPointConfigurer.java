@@ -22,10 +22,13 @@ public class RabbitEndPointConfigurer implements RabbitListenerConfigurer {
 
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
-        bridgesFromRabbit
+        var list = bridgesFromRabbit
                 .stream()
                 .filter(Bridge::isForwardingMessagesEnabled)
-                .map(bridgeGenerator::generateFromRabbit)
-                .forEach(registrar::registerEndpoint);
+                .toList();
+        for (int i = 0; i < list.size(); i++) {
+            var endpoint = bridgeGenerator.generateFromRabbit(i, list.get(i));
+            registrar.registerEndpoint(endpoint);
+        }
     }
 }
