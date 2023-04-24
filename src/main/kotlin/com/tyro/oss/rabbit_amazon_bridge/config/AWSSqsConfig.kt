@@ -22,8 +22,8 @@ import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.buffered.AmazonSQSBufferedAsyncClient
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.aws.core.region.RegionProvider
-import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
+import io.awspring.cloud.core.region.RegionProvider
+import io.awspring.cloud.messaging.core.QueueMessagingTemplate
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile

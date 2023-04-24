@@ -18,9 +18,7 @@ package com.tyro.oss.rabbit_amazon_bridge.generator
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import org.mockito.Mockito.verify
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.DeadletteringMessageListener
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.SnsForwardingMessageListener
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.SqsForwardingMessageListener
@@ -35,8 +33,10 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.amqp.core.Exchange
 import org.springframework.amqp.core.Queue
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate
-import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
+import io.awspring.cloud.messaging.core.NotificationMessagingTemplate
+import io.awspring.cloud.messaging.core.QueueMessagingTemplate
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
 class BridgeGeneratorTest {

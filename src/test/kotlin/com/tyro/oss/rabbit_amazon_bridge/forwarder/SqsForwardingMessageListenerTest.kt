@@ -17,7 +17,6 @@
 package com.tyro.oss.rabbit_amazon_bridge.forwarder
 
 
-import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.MessageTransformer
 import com.tyro.oss.randomdata.RandomString.randomString
 import org.assertj.core.api.Assertions.assertThat
@@ -29,7 +28,8 @@ import org.mockito.Mockito.anyString
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.core.MessageProperties
-import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
+import io.awspring.cloud.messaging.core.QueueMessagingTemplate
+import org.mockito.kotlin.argumentCaptor
 import org.springframework.messaging.MessagingException
 import kotlin.test.assertFailsWith
 

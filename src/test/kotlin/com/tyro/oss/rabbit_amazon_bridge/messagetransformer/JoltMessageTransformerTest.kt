@@ -18,11 +18,12 @@ package com.tyro.oss.rabbit_amazon_bridge.messagetransformer
 
 import com.bazaarvoice.jolt.Chainr
 import com.bazaarvoice.jolt.JsonUtils
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import org.mockito.Mockito.any
+import org.mockito.Mockito.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class JoltMessageTransformerTest {
 

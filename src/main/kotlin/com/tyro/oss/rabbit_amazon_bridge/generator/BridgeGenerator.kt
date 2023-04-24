@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerEndpoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate
-import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
+import io.awspring.cloud.messaging.core.NotificationMessagingTemplate
+import io.awspring.cloud.messaging.core.QueueMessagingTemplate
 import org.springframework.stereotype.Component
 
 @Component

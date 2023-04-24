@@ -16,17 +16,16 @@
 
 package com.tyro.oss.rabbit_amazon_bridge.config
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyZeroInteractions
-import com.nhaarman.mockito_kotlin.whenever
 import com.tyro.oss.rabbit_amazon_bridge.generator.BridgeGenerator
 import com.tyro.oss.rabbit_amazon_bridge.generator.fromRabbitToSNSInstance
 import com.tyro.oss.rabbit_amazon_bridge.generator.fromRabbitToSQSInstance
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerEndpoint
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar
 
@@ -84,7 +83,7 @@ class RabbitEndPointConfigurerTest {
         val configurer = RabbitEndPointConfigurer(bridges, bridgeGenerator)
         configurer.configureRabbitListeners(registrar)
 
-        verifyZeroInteractions(registrar)
-        verifyZeroInteractions(bridgeGenerator)
+        verifyNoInteractions(registrar)
+        verifyNoInteractions(bridgeGenerator)
     }
 }

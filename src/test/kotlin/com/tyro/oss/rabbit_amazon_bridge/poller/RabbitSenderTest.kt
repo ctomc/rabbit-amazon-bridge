@@ -16,13 +16,13 @@
 
 package com.tyro.oss.rabbit_amazon_bridge.poller
 
-import com.nhaarman.mockito_kotlin.verify
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.RabbitMessageBuilder
 import com.tyro.oss.rabbit_amazon_bridge.generator.*
 import com.tyro.oss.randomdata.RandomString
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate
 import java.nio.charset.StandardCharsets.UTF_8

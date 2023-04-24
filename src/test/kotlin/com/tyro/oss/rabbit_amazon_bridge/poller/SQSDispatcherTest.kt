@@ -18,18 +18,16 @@ package com.tyro.oss.rabbit_amazon_bridge.poller
 
 import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doThrow
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyZeroInteractions
 import com.tyro.oss.randomdata.RandomString.randomString
 import com.tyro.oss.rabbit_amazon_bridge.forwarder.IncomingAwsMessage
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
 import org.mockito.internal.verification.Times
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doThrow
 import kotlin.test.assertFailsWith
 
 @RunWith(MockitoJUnitRunner::class)
@@ -106,8 +104,8 @@ class SQSDispatcherTest {
         SQSDispatcher(amazonSQS, sqsReceiver, rabbitSender, randomString(), randomString(), randomString()).run()
 
         verify(sqsReceiver, Times(1)).receiveMessage()
-        verifyZeroInteractions(rabbitSender)
-        verifyZeroInteractions(amazonSQS)
+        verifyNoInteractions(rabbitSender)
+        verifyNoInteractions(amazonSQS)
 
     }
 }

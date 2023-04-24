@@ -19,15 +19,15 @@ package com.tyro.oss.rabbit_amazon_bridge.forwarder
 
 import com.amazonaws.AmazonClientException
 import com.amazonaws.SdkBaseException
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import org.mockito.Mockito.any
+import org.mockito.Mockito.verify
 import com.tyro.oss.randomdata.RandomString.randomString
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.whenever
 import org.springframework.amqp.AmqpRejectAndDontRequeueException
 import org.springframework.amqp.core.MessageListener
 import org.springframework.amqp.core.MessageProperties

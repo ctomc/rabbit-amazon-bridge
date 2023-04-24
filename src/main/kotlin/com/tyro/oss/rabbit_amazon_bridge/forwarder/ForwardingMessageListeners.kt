@@ -22,8 +22,8 @@ import com.tyro.oss.rabbit_amazon_bridge.messagetransformer.MessageTransformer
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.AmqpRejectAndDontRequeueException
 import org.springframework.amqp.core.MessageListener
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate
-import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
+import io.awspring.cloud.messaging.core.NotificationMessagingTemplate
+import io.awspring.cloud.messaging.core.QueueMessagingTemplate
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessagingException
 import org.springframework.messaging.support.MessageHeaderAccessor

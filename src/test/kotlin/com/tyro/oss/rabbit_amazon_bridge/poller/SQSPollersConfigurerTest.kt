@@ -18,7 +18,7 @@ package com.tyro.oss.rabbit_amazon_bridge.poller
 
 import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.model.GetQueueUrlResult
-import com.nhaarman.mockito_kotlin.*
+import org.mockito.Mockito.*
 import com.tyro.oss.rabbit_amazon_bridge.generator.RabbitCreationService
 import com.tyro.oss.rabbit_amazon_bridge.generator.fromSQSToRabbitInstance
 import com.tyro.oss.randomdata.RandomString.randomString
@@ -28,6 +28,8 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.internal.verification.Times
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.whenever
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.scheduling.config.ScheduledTaskRegistrar
 
@@ -69,7 +71,7 @@ class SQSPollersConfigurerTest{
 
         val dispatcherCaptor = argumentCaptor<SQSDispatcher>()
 
-        verify(taskRegistrar, Times(bridgesFromSQS.size)).addFixedDelayTask(dispatcherCaptor.capture(), eq(20))
+        verify(taskRegistrar, Times(bridgesFromSQS.size)).addFixedDelayTask(dispatcherCaptor.capture(), eq(20L))
 
         val dispatchers = dispatcherCaptor.allValues
 
@@ -103,8 +105,8 @@ class SQSPollersConfigurerTest{
         val config = SQSPollersConfigurer(amazonSQS, bridgesFromSQS, rabbitTemplate, rabbitCreationService, messageIdKey)
         config.configureTasks(taskRegistrar)
 
-        verifyZeroInteractions(taskRegistrar)
-        verifyZeroInteractions(amazonSQS)
-        verifyZeroInteractions(rabbitCreationService)
+        verifyNoInteractions(taskRegistrar)
+        verifyNoInteractions(amazonSQS)
+        verifyNoInteractions(rabbitCreationService)
     }
 }

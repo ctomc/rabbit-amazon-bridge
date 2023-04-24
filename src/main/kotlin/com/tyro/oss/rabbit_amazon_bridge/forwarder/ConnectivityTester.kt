@@ -17,8 +17,8 @@
 package com.tyro.oss.rabbit_amazon_bridge.forwarder
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate
-import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
+import io.awspring.cloud.messaging.core.NotificationMessagingTemplate
+import io.awspring.cloud.messaging.core.QueueMessagingTemplate
 import org.springframework.jmx.export.annotation.ManagedOperation
 import org.springframework.jmx.export.annotation.ManagedResource
 import org.springframework.stereotype.Component
